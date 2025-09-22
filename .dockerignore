@@ -1,0 +1,14 @@
+# .dockerignore
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.sqlite
+.env
+.venv/
+.git/
+.gitignore
+.cache/
+node_modules/
+frontend/*.map

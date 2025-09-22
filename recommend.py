@@ -18,7 +18,7 @@ def score_recipe(fridge_set, recipe_ings):
     score = coverage - 0.05 * miss
     return round(score, 4), hit, miss
 
-def recommend(fridge_items, k=5, time_limit=None, must_tags=None, ban_tags=None):
+def recommend(fridge_items, k=5, time_limit=None, must_tags=None, ban_tags=None, only_few_ings=False):
     recipes, aliases = load_data()
     fridge = set(normalize(fridge_items, aliases))
     must_tags = set(must_tags or [])
@@ -32,8 +32,12 @@ def recommend(fridge_items, k=5, time_limit=None, must_tags=None, ban_tags=None)
             continue
         if ban_tags and set(r.get("tags", [])) & ban_tags:
             continue
+        if only_few_ings and len(r.get("ingredients", [])) > 3:
+            continue  # 只保留 ≤3 种食材的菜
+
         s, hit, miss = score_recipe(fridge, r["ingredients"])
         candidates.append((s, hit, miss, r))
+
 
     candidates.sort(key=lambda x: x[0], reverse=True)
     return [{

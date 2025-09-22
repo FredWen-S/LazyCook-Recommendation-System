@@ -6,23 +6,21 @@
   <title>LazyCook · 懒人料理推荐</title>
   <style>
     :root{--g:#0ea5e9;--text:#0f172a;--muted:#475569;--bg:#f8fafc;--card:#ffffff;--bd:#e2e8f0;}
-    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
-      color:var(--text);background:var(--bg)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg)}
     header{padding:20px;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0}
     .container{max-width:920px;margin:0 auto;padding:20px}
     h1{font-size:24px;margin:0 0 6px}
     .desc{color:var(--muted);margin:0 0 16px}
     .row{display:flex;gap:12px;flex-wrap:wrap}
     .field{flex:1 1 280px;display:flex;flex-direction:column;gap:6px}
-    input,select,button,textarea{
-      padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:#fff;font-size:14px}
+    input,select,button{padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:#fff;font-size:14px}
     button{background:var(--g);color:#fff;border:none;cursor:pointer}
     button:disabled{opacity:.6;cursor:not-allowed}
     .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:18px}
     .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
     .card h3{margin:0 0 6px;font-size:18px}
-    .tag{display:inline-block;border:1px solid var(--bd);border-radius:999px;padding:2px 8px;margin-right:6px;
-      font-size:12px;color:var(--muted)}
+    .tag{display:inline-block;border:1px solid var(--bd);border-radius:999px;padding:2px 8px;margin-right:6px;font-size:12px;color:var(--muted)}
     .muted{color:var(--muted)}
     .status{font-size:13px;margin-left:10px}
     footer{color:var(--muted);text-align:center;padding:28px 12px}
@@ -32,45 +30,51 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="container">
-      <h1>LazyCook 懒人料理推荐 <span id="health" class="status muted">checking…</span></h1>
-      <p class="desc">输入冰箱里的食材（空格或逗号分隔）→ 获取可做菜谱与缺料清单。</p>
-      <div class="row">
-        <div class="field">
-          <label for="fridge">冰箱食材</label>
-          <input id="fridge" placeholder="例：番茄 鸡蛋 蒜 / 西兰花, 米饭, 生抽" />
-        </div>
-        <div class="field">
-          <label for="k">返回条数</label>
-          <select id="k">
-            <option>3</option><option selected>5</option><option>8</option><option>10</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="time">最多用时（分钟）</label>
-          <select id="time">
-            <option value="">不限</option>
-            <option>5</option><option>10</option><option selected>15</option><option>20</option><option>30</option>
-          </select>
-        </div>
+<header>
+  <div class="container">
+    <h1>LazyCook 懒人料理推荐 <span id="health" class="status muted">checking…</span></h1>
+    <p class="desc">输入冰箱里的食材（空格或逗号分隔）→ 获取可做菜谱与缺料清单。</p>
+
+    <div class="row">
+      <div class="field">
+        <label for="fridge">冰箱食材</label>
+        <input id="fridge" placeholder="例：番茄 鸡蛋 蒜 / 西兰花, 米饭, 生抽" />
       </div>
-      <div class="row" style="margin-top:10px">
-        <button id="go">推荐菜谱</button>
-        <button id="demo" type="button" style="background:#64748b">填入示例</button>
-        <span id="msg" class="status"></span>
+      <div class="field">
+        <label for="k">返回条数</label>
+        <select id="k"><option>3</option><option selected>5</option><option>8</option><option>10</option></select>
+      </div>
+      <div class="field">
+        <label for="time">最多用时（分钟）</label>
+        <select id="time">
+          <option value="">不限</option><option>5</option><option>10</option><option selected>15</option><option>20</option><option>30</option>
+        </select>
       </div>
     </div>
-  </header>
 
-  <main class="container">
-    <div id="results" class="results"></div>
-  </main>
+    <div class="row" style="margin-top:6px">
+      <label style="display:flex;align-items:center;gap:6px;">
+        <input type="checkbox" id="few" />
+        只用 ≤3 种食材
+      </label>
+    </div>
 
-  <footer>API: <span id="base" class="pill"></span></footer>
+    <div class="row" style="margin-top:10px">
+      <button id="go">推荐菜谱</button>
+      <button id="demo" type="button" style="background:#64748b">填入示例</button>
+      <span id="msg" class="status"></span>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div id="results" class="results"></div>
+</main>
+
+<footer>API: <span id="base" class="pill"></span></footer>
 
 <script>
-  // === 配置：API 基地址（如果你换了端口/域名，这里改掉） ===
+  // === 配置：API 基地址 ===
   const BASE_URL = "http://127.0.0.1:8000";
   document.getElementById('base').textContent = BASE_URL;
 
@@ -87,12 +91,12 @@
   }
   checkHealth();
 
-  // 小工具：把“番茄 鸡蛋, 蒜” → ["番茄","鸡蛋","蒜"]
+  // 输入解析
   function parseFridge(s){
     return s.split(/[\s,，；;]+/).map(x=>x.trim()).filter(Boolean);
   }
 
-  // 渲染结果卡片
+  // 渲染结果
   function render(items){
     const box = document.getElementById('results');
     box.innerHTML = "";
@@ -103,15 +107,14 @@
     for(const it of items){
       const miss = (it.need_more || []).join("、") || "无";
       const tags = (it.tags || []).map(t=>`<span class="tag">${t}</span>`).join("");
-      const html = `
+      box.insertAdjacentHTML('beforeend', `
         <div class="card">
           <h3>${it.name}</h3>
           <div class="muted">分数 ${it.score} · 命中 ${it.hit} · 缺 ${it.miss} · 用时 ${it.time??"-"} 分钟</div>
           <div style="margin:8px 0"><strong>还缺：</strong>${miss}</div>
           <div>${tags}</div>
         </div>
-      `;
-      box.insertAdjacentHTML('beforeend', html);
+      `);
     }
   }
 
@@ -122,6 +125,7 @@
     const fridge = parseFridge(document.getElementById('fridge').value);
     const k = parseInt(document.getElementById('k').value, 10);
     const time = document.getElementById('time').value ? parseInt(document.getElementById('time').value,10) : null;
+    const onlyFew = document.getElementById('few').checked;
 
     if(fridge.length===0){
       msg.textContent = "请输入至少一种食材"; msg.className="status error"; return;
@@ -131,7 +135,7 @@
       const r = await fetch(`${BASE_URL}/v1/recommend`, {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ fridge, k, time_limit: time })
+        body: JSON.stringify({ fridge, k, time_limit: time, only_few_ings: onlyFew })
       });
       if(!r.ok){
         const text = await r.text();
