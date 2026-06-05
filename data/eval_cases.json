@@ -1,0 +1,107 @@
+[
+  {
+    "ingredients": ["番茄", "鸡蛋", "蒜"],
+    "time_limit": 15,
+    "expected_contains": ["西红柿鸡蛋汤", "番茄炒蛋"],
+    "expected_not_contains": ["培根意面", "豆角焖面"],
+    "expected_tags": ["汤", "家常"]
+  },
+  {
+    "ingredients": ["西兰花", "蒜"],
+    "time_limit": 10,
+    "expected_contains": ["蒜蓉西兰花"],
+    "expected_not_contains": ["鸡蛋拌饭", "培根意面"],
+    "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "ingredients": ["土豆", "青椒", "醋", "蒜"],
+    "time_limit": 12,
+    "expected_contains": ["酸辣土豆丝", "青椒土豆丝"],
+    "expected_not_contains": ["紫菜蛋花汤", "鸡蛋拌饭"],
+    "expected_tags": ["酸辣", "炒"]
+  },
+  {
+    "ingredients": ["金针菇", "蒜", "醋"],
+    "time_limit": 8,
+    "expected_contains": ["金针菇拌菜"],
+    "expected_not_contains": ["番茄炒蛋", "咖喱土豆胡萝卜"],
+    "expected_tags": ["凉拌", "无火"]
+  },
+  {
+    "ingredients": ["米饭", "鸡蛋", "生抽"],
+    "time_limit": 5,
+    "expected_contains": ["鸡蛋拌饭"],
+    "expected_not_contains": ["豆角焖面", "培根意面"],
+    "expected_tags": ["拌", "极简"]
+  },
+  {
+    "ingredients": ["面条", "葱", "生抽"],
+    "time_limit": 12,
+    "expected_contains": ["葱油面"],
+    "expected_not_contains": ["凉拌黄瓜", "蚝油生菜"],
+    "expected_tags": ["面", "极简"]
+  },
+  {
+    "ingredients": ["香菇", "青菜", "蒜"],
+    "time_limit": 10,
+    "expected_contains": ["香菇青菜"],
+    "expected_not_contains": ["鸡蛋拌饭", "番茄炒蛋"],
+    "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "ingredients": ["卷心菜", "醋", "蒜"],
+    "time_limit": 10,
+    "expected_contains": ["醋溜卷心菜"],
+    "expected_not_contains": ["培根意面", "紫菜蛋花汤"],
+    "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "ingredients": ["空心菜", "蒜"],
+    "time_limit": 8,
+    "expected_contains": ["清炒空心菜"],
+    "expected_not_contains": ["葱油面", "西红柿鸡蛋汤"],
+    "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "ingredients": ["黄瓜", "蒜", "醋"],
+    "time_limit": 6,
+    "expected_contains": ["凉拌黄瓜"],
+    "expected_not_contains": ["培根意面", "咖喱土豆胡萝卜"],
+    "expected_tags": ["凉拌", "无火"]
+  },
+  {
+    "ingredients": ["面条", "蒜", "橄榄油"],
+    "time_limit": 15,
+    "expected_contains": ["蒜香意面"],
+    "expected_not_contains": ["紫菜蛋花汤", "凉拌黄瓜"],
+    "expected_tags": ["面", "西式"]
+  },
+  {
+    "ingredients": ["土豆", "胡萝卜", "咖喱块"],
+    "time_limit": 25,
+    "expected_contains": ["咖喱土豆胡萝卜"],
+    "expected_not_contains": ["鸡蛋拌饭", "葱油面"],
+    "expected_tags": ["炖", "家常"]
+  },
+  {
+    "ingredients": ["生菜", "蒜", "蚝油"],
+    "time_limit": 8,
+    "expected_contains": ["蚝油生菜"],
+    "expected_not_contains": ["番茄炒蛋", "豆角焖面"],
+    "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "ingredients": ["韭菜", "鸡蛋"],
+    "time_limit": 8,
+    "expected_contains": ["韭菜炒鸡蛋"],
+    "expected_not_contains": ["蒜香意面", "凉拌黄瓜"],
+    "expected_tags": ["家常", "炒"]
+  },
+  {
+    "ingredients": ["油麦菜", "蒜"],
+    "time_limit": 8,
+    "expected_contains": ["蒜蓉油麦菜"],
+    "expected_not_contains": ["鸡蛋拌饭", "培根意面"],
+    "expected_tags": ["素菜", "炒"]
+  }
+]

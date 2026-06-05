@@ -74,6 +74,24 @@ class RecipeRecommendation(BaseModel):
         le=1,
         description="Recommendation score normalized to the 0-1 range.",
     )
+    similarity_score: float = Field(
+        ...,
+        ge=0,
+        le=1,
+        description="Debug semantic similarity score normalized to the 0-1 range.",
+    )
+    ingredient_coverage: float = Field(
+        ...,
+        ge=0,
+        le=1,
+        description="Debug ingredient coverage score normalized to the 0-1 range.",
+    )
+    time_score: float = Field(
+        ...,
+        ge=0,
+        le=1,
+        description="Debug time fit score normalized to the 0-1 range.",
+    )
     reason: str | None = Field(
         default=None,
         description="Human-readable recommendation reason.",

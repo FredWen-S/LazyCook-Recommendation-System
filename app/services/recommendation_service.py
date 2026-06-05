@@ -34,12 +34,14 @@ class RecommendationService:
             recipe_embedding = self.embedder.embed_ingredients(recipe_ingredients)
             semantic_score = normalize_cosine(cosine_similarity(fridge_embedding, recipe_embedding))
             coverage_score = ingredient_coverage(fridge_set, recipe_ingredients)
+            time_fit_score = time_score(recipe.cook_time, request.time_limit)
+            matched_ingredients = matched_items(fridge_set, recipe_ingredients)
             missing_ingredients = missing_items(fridge_set, recipe_ingredients)
 
             score = combined_score(
                 semantic_score=semantic_score,
                 coverage_score=coverage_score,
-                missing_count=len(missing_ingredients),
+                time_score=time_fit_score,
             )
             candidates.append(
                 ScoredRecipe(
@@ -47,6 +49,8 @@ class RecommendationService:
                     score=score,
                     semantic_score=semantic_score,
                     coverage_score=coverage_score,
+                    time_score=time_fit_score,
+                    matched_ingredients=matched_ingredients,
                     missing_ingredients=missing_ingredients,
                 )
             )
@@ -78,12 +82,16 @@ class ScoredRecipe:
         score: float,
         semantic_score: float,
         coverage_score: float,
+        time_score: float,
+        matched_ingredients: list[str],
         missing_ingredients: list[str],
     ) -> None:
         self.recipe = recipe
         self.score = score
         self.semantic_score = semantic_score
         self.coverage_score = coverage_score
+        self.time_score = time_score
+        self.matched_ingredients = matched_ingredients
         self.missing_ingredients = missing_ingredients
 
 
@@ -113,6 +121,18 @@ def ingredient_coverage(fridge_set: set[str], recipe_ingredients: list[str]) -> 
     return hits / len(recipe_ingredients)
 
 
+def time_score(cook_time: int | None, time_limit: int | None) -> float:
+    if cook_time is None or time_limit is None:
+        return 1.0
+    if cook_time > time_limit:
+        return 0.0
+    return round(max(0.0, min(1.0, 1 - (cook_time / time_limit) * 0.2)), 4)
+
+
+def matched_items(fridge_set: set[str], recipe_ingredients: list[str]) -> list[str]:
+    return [ingredient for ingredient in recipe_ingredients if ingredient in fridge_set]
+
+
 def missing_items(fridge_set: set[str], recipe_ingredients: list[str]) -> list[str]:
     return [ingredient for ingredient in recipe_ingredients if ingredient not in fridge_set]
 
@@ -120,20 +140,15 @@ def missing_items(fridge_set: set[str], recipe_ingredients: list[str]) -> list[s
 def combined_score(
     semantic_score: float,
     coverage_score: float,
-    missing_count: int,
+    time_score: float,
 ) -> float:
-    penalty = min(0.25, missing_count * 0.03)
-    score = 0.55 * coverage_score + 0.45 * semantic_score - penalty
+    score = 0.55 * coverage_score + 0.35 * semantic_score + 0.10 * time_score
     return round(max(0.0, min(1.0, score)), 4)
 
 
 def to_schema(candidate: ScoredRecipe) -> RecipeRecommendation:
     recipe = candidate.recipe
-    reason = (
-        f"coverage={candidate.coverage_score:.2f}, "
-        f"semantic_similarity={candidate.semantic_score:.2f}, "
-        f"missing={len(candidate.missing_ingredients)}"
-    )
+    reason = build_reason(candidate)
     return RecipeRecommendation(
         id=recipe.id,
         name=recipe.name,
@@ -141,5 +156,24 @@ def to_schema(candidate: ScoredRecipe) -> RecipeRecommendation:
         missing_ingredients=candidate.missing_ingredients,
         cook_time=recipe.cook_time,
         score=candidate.score,
+        similarity_score=round(candidate.semantic_score, 4),
+        ingredient_coverage=round(candidate.coverage_score, 4),
+        time_score=candidate.time_score,
         reason=reason,
     )
+
+
+def build_reason(candidate: ScoredRecipe) -> str:
+    recipe = candidate.recipe
+    matched = "、".join(candidate.matched_ingredients[:3]) or "当前食材"
+    missing = "、".join(candidate.missing_ingredients[:3]) if candidate.missing_ingredients else "基本不缺"
+    cook_time = f"预计 {recipe.cook_time} 分钟" if recipe.cook_time is not None else "用时未知"
+
+    if not candidate.missing_ingredients:
+        fit = "食材匹配度很高"
+    elif candidate.coverage_score >= 0.5:
+        fit = "只需要补少量食材"
+    else:
+        fit = "和现有食材有一定相似度"
+
+    return f"已匹配 {matched}；缺少 {missing}；{cook_time}。{fit}，适合作为当前推荐。"
