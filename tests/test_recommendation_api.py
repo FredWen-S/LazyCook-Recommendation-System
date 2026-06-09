@@ -18,11 +18,25 @@ def test_recommend_endpoint_returns_200() -> None:
     assert len(body["recommendations"]) <= 3
     if body["recommendations"]:
         item = body["recommendations"][0]
-        assert "score" in item
-        assert "similarity_score" in item
-        assert "ingredient_coverage" in item
-        assert "time_score" in item
-        assert "missing_ingredients" in item
+        assert {
+            "id",
+            "name",
+            "matched_ingredients",
+            "missing_ingredients",
+            "cook_time",
+            "tags",
+            "reason",
+            "score",
+            "similarity_score",
+            "ingredient_coverage",
+            "time_score",
+        }.issubset(item)
+
+    assert {
+        "embedding_provider",
+        "score_weights",
+        "total_candidates",
+    }.issubset(body["meta"])
 
 
 def test_recommend_endpoint_rejects_missing_fridge() -> None:
@@ -63,3 +77,18 @@ def test_recommend_endpoint_time_limit_boundaries() -> None:
     assert client.post(
         "/v1/recommend", json={"fridge": ["番茄"], "time_limit": 241}
     ).status_code == 422
+
+
+def test_recommend_endpoint_accepts_preferences() -> None:
+    response = client.post(
+        "/v1/recommend",
+        json={
+            "fridge": ["鸡蛋", "盐"],
+            "preferences": {"avoid": ["汤"], "max_missing": 2},
+        },
+    )
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["meta"]["preference_rules"]["enabled"] is True
+    assert all("汤" not in item["name"] for item in body["recommendations"])

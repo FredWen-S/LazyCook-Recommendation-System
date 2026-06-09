@@ -1,0 +1,3 @@
+# Optional ML dependencies for LAZYCOOK_EMBEDDING_PROVIDER=sentence-transformers.
+# Keep these out of requirements.txt so the default hashing provider stays lightweight.
+sentence-transformers==5.1.2

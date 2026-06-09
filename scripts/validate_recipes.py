@@ -26,13 +26,14 @@ def validate_recipes_file(path: Path = DEFAULT_RECIPES_PATH) -> list[str]:
             continue
 
         recipe_id = recipe.get("id")
-        if recipe_id is not None:
-            if not isinstance(recipe_id, str) or not recipe_id.strip():
-                errors.append(f"{location}.id must be a non-empty string when present")
-            elif recipe_id in seen_ids:
-                errors.append(f"{location}.id duplicates {recipe_id!r}")
+        if not isinstance(recipe_id, str) or not recipe_id.strip():
+            errors.append(f"{location}.id must be a non-empty string")
+        else:
+            normalized_id = recipe_id.strip()
+            if normalized_id in seen_ids:
+                errors.append(f"{location}.id duplicates {normalized_id!r}")
             else:
-                seen_ids.add(recipe_id)
+                seen_ids.add(normalized_id)
 
         name = recipe.get("name")
         if not isinstance(name, str) or not name.strip():

@@ -103,5 +103,174 @@
     "expected_contains": ["蒜蓉油麦菜"],
     "expected_not_contains": ["鸡蛋拌饭", "培根意面"],
     "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "ingredients": ["洋葱", "鸡蛋"],
+    "time_limit": 8,
+    "expected_contains": ["洋葱炒蛋"],
+    "expected_not_contains": ["蒜香意面", "凉拌黄瓜"],
+    "expected_tags": ["家常", "炒"]
+  },
+  {
+    "ingredients": ["木耳", "鸡蛋", "蒜"],
+    "time_limit": 10,
+    "expected_contains": ["木耳炒鸡蛋"],
+    "expected_not_contains": ["葱油面", "培根意面"],
+    "expected_tags": ["家常", "炒"]
+  },
+  {
+    "ingredients": ["金针菇", "豆腐"],
+    "time_limit": 10,
+    "expected_contains": ["金针菇豆腐汤"],
+    "expected_not_contains": ["番茄炒蛋", "咖喱土豆胡萝卜"],
+    "expected_tags": ["汤", "极简"]
+  },
+  {
+    "label": "alias tomato egg",
+    "difficulty": "alias",
+    "ingredients": ["西红柿", "蛋"],
+    "time_limit": 10,
+    "expected_contains": ["西红柿鸡蛋汤", "番茄炒蛋"],
+    "expected_not_contains": ["培根意面", "豆角焖面"],
+    "expected_tags": ["家常", "汤"]
+  },
+  {
+    "label": "alias potato sour spicy",
+    "difficulty": "alias",
+    "ingredients": ["马铃薯", "青椒", "醋"],
+    "time_limit": 12,
+    "expected_contains": ["酸辣土豆丝", "青椒土豆丝"],
+    "expected_not_contains": ["鸡蛋拌饭", "紫菜蛋花汤"],
+    "expected_tags": ["酸辣", "炒"]
+  },
+  {
+    "label": "leftover rice",
+    "difficulty": "fuzzy",
+    "ingredients": ["剩饭", "蛋", "生抽"],
+    "time_limit": 5,
+    "expected_contains": ["鸡蛋拌饭"],
+    "expected_not_contains": ["培根意面", "豆角焖面"],
+    "expected_tags": ["拌", "极简"]
+  },
+  {
+    "label": "fuzzy meat noodles",
+    "difficulty": "fuzzy",
+    "ingredients": ["肉", "面条", "蒜"],
+    "time_limit": 20,
+    "expected_contains": ["培根意面"],
+    "expected_not_contains": ["凉拌黄瓜", "紫菜蛋花汤"],
+    "expected_tags": ["面", "西式"]
+  },
+  {
+    "label": "green leafy vegetable",
+    "difficulty": "fuzzy",
+    "ingredients": ["绿叶菜", "香菇"],
+    "time_limit": 10,
+    "preferences": {"diet": ["素菜"], "max_missing": 3},
+    "expected_contains": ["香菇青菜"],
+    "expected_not_contains": ["鸡蛋拌饭", "培根意面"],
+    "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "label": "egg but avoid soup",
+    "difficulty": "hard_negative",
+    "hard_negative": true,
+    "ingredients": ["鸡蛋", "盐"],
+    "time_limit": 10,
+    "preferences": {"avoid": ["汤"], "max_missing": 2},
+    "expected_contains": ["洋葱炒蛋", "胡萝卜炒蛋", "韭菜炒鸡蛋", "木耳炒鸡蛋"],
+    "expected_not_contains": ["紫菜蛋花汤", "西红柿鸡蛋汤", "金针菇豆腐汤"],
+    "expected_tags": ["家常", "炒"]
+  },
+  {
+    "label": "egg rice hard negative",
+    "difficulty": "hard_negative",
+    "hard_negative": true,
+    "ingredients": ["鸡蛋", "米饭"],
+    "time_limit": 6,
+    "expected_contains": ["鸡蛋拌饭"],
+    "expected_not_contains": ["番茄炒蛋", "洋葱炒蛋"],
+    "expected_tags": ["拌", "极简"]
+  },
+  {
+    "label": "very quick cold dish",
+    "difficulty": "time_limit",
+    "ingredients": ["黄瓜", "蒜", "醋"],
+    "time_limit": 5,
+    "expected_contains": ["凉拌黄瓜"],
+    "expected_not_contains": ["酸辣土豆丝", "蒜香意面"],
+    "expected_tags": ["凉拌", "无火"]
+  },
+  {
+    "label": "no missing exact soup",
+    "difficulty": "preference",
+    "ingredients": ["西红柿", "蛋", "盐"],
+    "time_limit": 8,
+    "preferences": {"max_missing": 0},
+    "expected_contains": ["西红柿鸡蛋汤"],
+    "expected_not_contains": ["番茄炒蛋", "洋葱炒蛋"],
+    "expected_tags": ["汤", "家常"]
+  },
+  {
+    "label": "vegetarian sparse pantry",
+    "difficulty": "preference",
+    "ingredients": ["蒜", "油", "盐"],
+    "time_limit": 10,
+    "preferences": {"diet": ["素菜"], "max_missing": 1},
+    "expected_contains": ["蒜蓉西兰花", "清炒空心菜", "蒜蓉油麦菜", "香菇青菜", "醋溜卷心菜"],
+    "expected_not_contains": ["洋葱炒蛋", "培根意面"],
+    "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "label": "meal type noodles",
+    "difficulty": "preference",
+    "ingredients": ["面条", "蒜"],
+    "time_limit": 15,
+    "preferences": {"meal_type": "面", "max_missing": 3},
+    "expected_contains": ["蒜香意面", "葱油面"],
+    "expected_not_contains": ["紫菜蛋花汤", "凉拌黄瓜"],
+    "expected_tags": ["面", "极简"]
+  },
+  {
+    "label": "avoid bacon pasta",
+    "difficulty": "preference",
+    "hard_negative": true,
+    "ingredients": ["肉", "面条", "蒜", "橄榄油"],
+    "time_limit": 20,
+    "preferences": {"avoid": ["培根"], "meal_type": "面"},
+    "expected_contains": ["蒜香意面"],
+    "expected_not_contains": ["培根意面"],
+    "expected_tags": ["面", "西式"]
+  },
+  {
+    "label": "no fire preference",
+    "difficulty": "preference",
+    "ingredients": ["黄瓜", "蒜", "醋", "生抽"],
+    "time_limit": 8,
+    "preferences": {"diet": ["无火"]},
+    "expected_contains": ["凉拌黄瓜"],
+    "expected_not_contains": ["番茄炒蛋", "咖喱土豆胡萝卜"],
+    "expected_tags": ["凉拌", "无火"]
+  },
+  {
+    "label": "green vegetable vegetarian",
+    "difficulty": "preference",
+    "ingredients": ["青菜", "蒜", "油", "盐"],
+    "time_limit": 10,
+    "preferences": {"diet": ["素食"], "max_missing": 1},
+    "expected_contains": ["香菇青菜", "蒜蓉西兰花", "清炒空心菜", "蒜蓉油麦菜"],
+    "expected_not_contains": ["鸡蛋拌饭", "培根意面"],
+    "expected_tags": ["素菜", "炒"]
+  },
+  {
+    "label": "potato avoid sour spicy",
+    "difficulty": "hard_negative",
+    "hard_negative": true,
+    "ingredients": ["土豆", "青椒", "蒜"],
+    "time_limit": 15,
+    "preferences": {"avoid": ["酸辣土豆丝"]},
+    "expected_contains": ["青椒土豆丝"],
+    "expected_not_contains": ["酸辣土豆丝"],
+    "expected_tags": ["炒"]
   }
 ]
