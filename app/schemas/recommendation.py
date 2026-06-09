@@ -16,7 +16,7 @@ class RecommendationPreferences(BaseModel):
     )
     diet: list[str] = Field(
         default_factory=list,
-        description="Preferred diet tags, such as 素菜 or 无火.",
+        description="Preferred diet tags. Examples include vegetarian or no-fire tags.",
     )
     max_missing: int | None = Field(
         default=None,

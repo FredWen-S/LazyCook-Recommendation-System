@@ -82,7 +82,8 @@ def main() -> int:
             print(f"- {error}")
         return 1
 
-    print(f"Recipe data validation passed: {DEFAULT_RECIPES_PATH}")
+    display_path = DEFAULT_RECIPES_PATH.relative_to(PROJECT_ROOT).as_posix()
+    print(f"Recipe data validation passed: {display_path}")
     return 0
 
 

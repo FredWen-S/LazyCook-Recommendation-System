@@ -1,160 +1,328 @@
 <!doctype html>
-<html lang="zh">
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>LazyCook · 懒人料理推荐</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LazyCook Recommendation Demo</title>
   <style>
-    :root{--g:#0ea5e9;--text:#0f172a;--muted:#475569;--bg:#f8fafc;--card:#ffffff;--bd:#e2e8f0;}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;color:var(--text);background:var(--bg)}
-    header{padding:20px;border-bottom:1px solid var(--bd);background:#fff;position:sticky;top:0}
-    .container{max-width:920px;margin:0 auto;padding:20px}
-    h1{font-size:24px;margin:0 0 6px}
-    .desc{color:var(--muted);margin:0 0 16px}
-    .row{display:flex;gap:12px;flex-wrap:wrap}
-    .field{flex:1 1 280px;display:flex;flex-direction:column;gap:6px}
-    input,select,button{padding:10px 12px;border:1px solid var(--bd);border-radius:10px;background:#fff;font-size:14px}
-    button{background:var(--g);color:#fff;border:none;cursor:pointer}
-    button:disabled{opacity:.6;cursor:not-allowed}
-    .results{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:18px}
-    .card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px}
-    .card h3{margin:0 0 6px;font-size:18px}
-    .tag{display:inline-block;border:1px solid var(--bd);border-radius:999px;padding:2px 8px;margin-right:6px;font-size:12px;color:var(--muted)}
-    .muted{color:var(--muted)}
-    .status{font-size:13px;margin-left:10px}
-    footer{color:var(--muted);text-align:center;padding:28px 12px}
-    .pill{background:#ecfeff;border:1px solid #bae6fd;border-radius:999px;padding:2px 8px;font-size:12px}
-    .error{color:#b91c1c}
-    .ok{color:#059669}
+    :root {
+      --bg: #f7faf8;
+      --panel: #ffffff;
+      --text: #172016;
+      --muted: #647067;
+      --line: #dfe7df;
+      --accent: #1f8a5b;
+      --accent-dark: #166842;
+      --warn: #a24b17;
+      --bad: #b42318;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font: 14px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    header {
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+    }
+    main, .bar {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 0;
+    }
+    h1 { margin: 0; font-size: 22px; font-weight: 700; }
+    .status { color: var(--muted); font-size: 13px; }
+    main { padding: 18px 0 28px; }
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    form, .result {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    form { padding: 14px; }
+    .result { padding: 14px; }
+    .fields {
+      display: grid;
+      gap: 12px;
+    }
+    label {
+      display: grid;
+      gap: 5px;
+      font-weight: 650;
+    }
+    input, textarea, select, button {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 9px 10px;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+    }
+    textarea { resize: vertical; min-height: 70px; }
+    button {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:hover { background: var(--accent-dark); }
+    button.secondary {
+      color: var(--accent-dark);
+      background: #eef8f1;
+    }
+    .inline {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .meta {
+      margin: 0 0 12px;
+      color: var(--muted);
+    }
+    .cards {
+      display: grid;
+      gap: 12px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+    }
+    .card h2 {
+      margin: 0 0 6px;
+      font-size: 18px;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .chip {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 2px 7px;
+      color: var(--muted);
+      background: #fbfdfb;
+      font-size: 12px;
+    }
+    .score {
+      color: var(--accent-dark);
+      font-weight: 700;
+    }
+    .missing { color: var(--warn); }
+    details {
+      margin-top: 8px;
+      color: var(--muted);
+    }
+    summary { cursor: pointer; }
+    .error { color: var(--bad); }
+    .empty {
+      padding: 24px;
+      color: var(--muted);
+      text-align: center;
+    }
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; }
+      .bar { align-items: flex-start; flex-direction: column; }
+    }
   </style>
 </head>
 <body>
-<header>
-  <div class="container">
-    <h1>LazyCook 懒人料理推荐 <span id="health" class="status muted">checking…</span></h1>
-    <p class="desc">输入冰箱里的食材（空格或逗号分隔）→ 获取可做菜谱与缺料清单。</p>
-
-    <div class="row">
-      <div class="field">
-        <label for="fridge">冰箱食材</label>
-        <input id="fridge" placeholder="例：番茄 鸡蛋 蒜 / 西兰花, 米饭, 生抽" />
+  <header>
+    <div class="bar">
+      <div>
+        <h1>LazyCook Recommendation Demo</h1>
+        <div class="status" id="apiStatus">Checking API...</div>
       </div>
-      <div class="field">
-        <label for="k">返回条数</label>
-        <select id="k"><option>3</option><option selected>5</option><option>8</option><option>10</option></select>
-      </div>
-      <div class="field">
-        <label for="time">最多用时（分钟）</label>
-        <select id="time">
-          <option value="">不限</option><option>5</option><option>10</option><option selected>15</option><option>20</option><option>30</option>
-        </select>
-      </div>
+      <div class="status" id="apiBase"></div>
     </div>
+  </header>
 
-    <div class="row" style="margin-top:6px">
-      <label style="display:flex;align-items:center;gap:6px;">
-        <input type="checkbox" id="few" />
-        只用 ≤3 种食材
-      </label>
-    </div>
-
-    <div class="row" style="margin-top:10px">
-      <button id="go">推荐菜谱</button>
-      <button id="demo" type="button" style="background:#64748b">填入示例</button>
-      <span id="msg" class="status"></span>
-    </div>
-  </div>
-</header>
-
-<main class="container">
-  <div id="results" class="results"></div>
-</main>
-
-<footer>API: <span id="base" class="pill"></span></footer>
-
-<script>
-  // === 配置：API 基地址 ===
-  const BASE_URL = "http://127.0.0.1:8000";
-  document.getElementById('base').textContent = BASE_URL;
-
-  // 健康检查
-  async function checkHealth(){
-    const el = document.getElementById('health');
-    try{
-      const r = await fetch(`${BASE_URL}/health`);
-      if(!r.ok) throw new Error(r.status);
-      el.textContent = "✓ API OK"; el.className="status ok";
-    }catch(e){
-      el.textContent = "API 不可用"; el.className="status error";
-    }
-  }
-  checkHealth();
-
-  // 输入解析
-  function parseFridge(s){
-    return s.split(/[\s,，；;]+/).map(x=>x.trim()).filter(Boolean);
-  }
-
-  // 渲染结果
-  function render(items){
-    const box = document.getElementById('results');
-    box.innerHTML = "";
-    if(!items || !items.length){
-      box.innerHTML = `<div class="muted">没有找到可做的菜谱（试试减少限制或补充食材）。</div>`;
-      return;
-    }
-    for(const it of items){
-      const miss = (it.need_more || []).join("、") || "无";
-      const tags = (it.tags || []).map(t=>`<span class="tag">${t}</span>`).join("");
-      box.insertAdjacentHTML('beforeend', `
-        <div class="card">
-          <h3>${it.name}</h3>
-          <div class="muted">分数 ${it.score} · 命中 ${it.hit} · 缺 ${it.miss} · 用时 ${it.time??"-"} 分钟</div>
-          <div style="margin:8px 0"><strong>还缺：</strong>${miss}</div>
-          <div>${tags}</div>
+  <main>
+    <div class="grid">
+      <form id="recommendForm">
+        <div class="fields">
+          <label>
+            Fridge / ingredients
+            <textarea id="fridge" required>番茄, 鸡蛋, 蒜</textarea>
+          </label>
+          <div class="inline">
+            <label>
+              time_limit
+              <input id="timeLimit" type="number" min="1" max="240" value="15">
+            </label>
+            <label>
+              k
+              <input id="k" type="number" min="1" max="20" value="5">
+            </label>
+          </div>
+          <label>
+            preferences.avoid
+            <input id="avoid" placeholder="例：汤, 培根">
+          </label>
+          <label>
+            preferences.diet
+            <input id="diet" placeholder="例：素菜, 无火">
+          </label>
+          <label>
+            preferences.meal_type
+            <input id="mealType" placeholder="例：面">
+          </label>
+          <label>
+            preferences.max_missing
+            <input id="maxMissing" type="number" min="0" max="50" placeholder="例：2">
+          </label>
         </div>
-      `);
-    }
-  }
+        <div class="actions">
+          <button type="submit">Recommend</button>
+          <button class="secondary" id="exampleButton" type="button">Example</button>
+        </div>
+      </form>
 
-  // 点击事件
-  document.getElementById('go').addEventListener('click', async ()=>{
-    const btn = document.getElementById('go');
-    const msg = document.getElementById('msg');
-    const fridge = parseFridge(document.getElementById('fridge').value);
-    const k = parseInt(document.getElementById('k').value, 10);
-    const time = document.getElementById('time').value ? parseInt(document.getElementById('time').value,10) : null;
-    const onlyFew = document.getElementById('few').checked;
+      <section class="result">
+        <p class="meta" id="meta">提交请求后会显示推荐结果。</p>
+        <div id="results" class="cards"></div>
+      </section>
+    </div>
+  </main>
 
-    if(fridge.length===0){
-      msg.textContent = "请输入至少一种食材"; msg.className="status error"; return;
-    }
-    btn.disabled = true; msg.textContent = "请求中…"; msg.className="status muted";
-    try{
-      const r = await fetch(`${BASE_URL}/v1/recommend`, {
-        method:"POST",
-        headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({ fridge, k, time_limit: time, only_few_ings: onlyFew })
-      });
-      if(!r.ok){
-        const text = await r.text();
-        throw new Error(`${r.status} ${text}`);
+  <script>
+    const apiBase = location.protocol === "file:" ? "http://127.0.0.1:8000" : location.origin;
+    const apiStatus = document.getElementById("apiStatus");
+    document.getElementById("apiBase").textContent = `API ${apiBase}`;
+
+    const splitTerms = (value) => value
+      .split(/[\s,，;；]+/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const escapeHtml = (value) => String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#39;");
+
+    const renderList = (items, emptyText = "无") => {
+      if (!items || items.length === 0) return escapeHtml(emptyText);
+      return items.map(escapeHtml).join("、");
+    };
+
+    async function checkHealth() {
+      try {
+        const response = await fetch(`${apiBase}/health`);
+        if (!response.ok) throw new Error(response.status);
+        apiStatus.textContent = "API ready";
+      } catch (error) {
+        apiStatus.innerHTML = `<span class="error">API unavailable</span>`;
       }
-      const data = await r.json();
-      render(data.items);
-      msg.textContent = `共返回 ${data.items.length} 条`; msg.className="status ok";
-    }catch(e){
-      msg.textContent = `请求失败：${e.message}`; msg.className="status error";
-    }finally{
-      btn.disabled = false;
     }
-  });
 
-  // 示例按钮
-  document.getElementById('demo').addEventListener('click', ()=>{
-    document.getElementById('fridge').value = "番茄 鸡蛋 蒜";
-  });
-</script>
+    function buildPayload() {
+      const payload = {
+        fridge: splitTerms(document.getElementById("fridge").value),
+        k: Number(document.getElementById("k").value || 5),
+      };
+
+      const timeLimit = document.getElementById("timeLimit").value;
+      if (timeLimit) payload.time_limit = Number(timeLimit);
+
+      const preferences = {};
+      const avoid = splitTerms(document.getElementById("avoid").value);
+      const diet = splitTerms(document.getElementById("diet").value);
+      const mealType = document.getElementById("mealType").value.trim();
+      const maxMissing = document.getElementById("maxMissing").value;
+
+      if (avoid.length) preferences.avoid = avoid;
+      if (diet.length) preferences.diet = diet;
+      if (mealType) preferences.meal_type = mealType;
+      if (maxMissing !== "") preferences.max_missing = Number(maxMissing);
+      if (Object.keys(preferences).length) payload.preferences = preferences;
+
+      return payload;
+    }
+
+    function renderResults(data) {
+      const results = document.getElementById("results");
+      const meta = document.getElementById("meta");
+      const items = data.recommendations || [];
+
+      meta.textContent = `${items.length} recommendations · provider ${data.meta.embedding_provider} · candidates ${data.meta.candidate_count}/${data.meta.total_candidates}`;
+      if (!items.length) {
+        results.innerHTML = `<div class="empty">没有符合条件的推荐。</div>`;
+        return;
+      }
+
+      results.innerHTML = items.map((item) => `
+        <article class="card">
+          <h2>${escapeHtml(item.name)}</h2>
+          <div><span class="score">score ${item.score.toFixed(4)}</span> · ${item.cook_time ?? "-"} min</div>
+          <div class="chips">${(item.tags || []).map((tag) => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}</div>
+          <div>Matched: ${renderList(item.matched_ingredients)}</div>
+          <div class="missing">Missing: ${renderList(item.missing_ingredients)}</div>
+          <p>${escapeHtml(item.reason || "")}</p>
+          <details>
+            <summary>Debug scoring</summary>
+            <div>similarity_score: ${item.similarity_score}</div>
+            <div>ingredient_coverage: ${item.ingredient_coverage}</div>
+            <div>time_score: ${item.time_score}</div>
+          </details>
+        </article>
+      `).join("");
+    }
+
+    document.getElementById("recommendForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const payload = buildPayload();
+      if (!payload.fridge.length) {
+        document.getElementById("meta").innerHTML = `<span class="error">请输入至少一种食材。</span>`;
+        return;
+      }
+
+      document.getElementById("meta").textContent = "Loading...";
+      document.getElementById("results").innerHTML = "";
+      try {
+        const response = await fetch(`${apiBase}/v1/recommend`, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error(await response.text());
+        renderResults(await response.json());
+      } catch (error) {
+        document.getElementById("meta").innerHTML = `<span class="error">${escapeHtml(error.message)}</span>`;
+      }
+    });
+
+    document.getElementById("exampleButton").addEventListener("click", () => {
+      document.getElementById("fridge").value = "剩饭, 蛋, 生抽";
+      document.getElementById("timeLimit").value = "5";
+      document.getElementById("k").value = "5";
+      document.getElementById("avoid").value = "";
+      document.getElementById("diet").value = "极简";
+      document.getElementById("mealType").value = "";
+      document.getElementById("maxMissing").value = "2";
+    });
+
+    checkHealth();
+  </script>
 </body>
 </html>

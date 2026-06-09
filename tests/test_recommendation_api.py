@@ -6,6 +6,33 @@ from app.main import app
 client = TestClient(app)
 
 
+def test_health_endpoint_returns_ok() -> None:
+    response = client.get("/health")
+
+    assert response.status_code == 200
+    assert response.json() == {"status": "ok"}
+
+
+def test_demo_frontend_is_served() -> None:
+    response = client.get("/demo/")
+
+    assert response.status_code == 200
+    assert "LazyCook Recommendation Demo" in response.text
+
+
+def test_cors_preflight_allows_local_demo_origin() -> None:
+    response = client.options(
+        "/v1/recommend",
+        headers={
+            "Origin": "http://127.0.0.1:8000",
+            "Access-Control-Request-Method": "POST",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:8000"
+
+
 def test_recommend_endpoint_returns_200() -> None:
     response = client.post(
         "/v1/recommend",
